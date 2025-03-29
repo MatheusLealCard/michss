@@ -1,21 +1,22 @@
 const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
+require('dotenv').config();
+
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;  // Garantindo que o Render use a variável de ambiente PORT
 
-// Configuração do banco de dados PostgreSQL
+// Conexão com o PostgreSQL usando a variável de ambiente
 const pool = new Pool({
-    user: "seu_usuario",
-    host: "localhost", // Ou o IP do servidor do banco
-    database: "seu_banco",
-    password: "sua_senha",
-    port: 5432, // Porta padrão do PostgreSQL
+    connectionString: process.env.DATABASE_URL, // Pega a string de conexão da variável de ambiente
+    ssl: {
+        rejectUnauthorized: false, // Necessário para alguns bancos externos como o Neon
+    }
 });
 
 // Middlewares
-app.use(express.json()); 
+app.use(express.json());
 app.use(cors());
 
 // Rota para receber pedidos
